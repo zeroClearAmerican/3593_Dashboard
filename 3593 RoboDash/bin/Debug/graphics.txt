@@ -1,0 +1,90 @@
+rect 650 572 395 249 // Robot frame
+rect 650 612 395 169 // Internal frame
+
+rect 1010 646 25 101 // Battery
+rect 870 656 130 80 // PDP
+
+rect 665 579 60 27 // Top-Left wheel
+rect 817 579 60 27 // Top-Middle wheel
+rect 969 579 60 27 // Top-Right wheel
+
+rect 665 788 60 27 // Bottom-Left wheel
+rect 817 788 60 27 // Bottom-Middle wheel
+rect 969 788 60 27 // Bottom-Right wheel
+
+
+// Drive Left
+dot 1274 168
+line 1276 171 1170 210
+line 1170 210 1170 580
+line 1170 580 1055 620
+line 1055 620 935 620
+line 935 620 905 640
+line 905 640 905 670
+dot 902 667
+
+// Drive Right
+dot 1274 204
+line 1276 207 1178 244
+line 1178 244 1178 582
+line 1178 582 1055 625
+line 1055 625 935 625
+line 935 625 905 645
+line 905 645 905 722
+dot 902 719
+
+// Arm Intakes
+dot 1274 240
+line 1276 243 1186 278
+line 1186 278 1186 584
+line 1186 584 1055 630
+line 1055 630 940 630
+line 940 630 914 648
+line 914 648 914 670
+line 914 670 914 722
+dot 911 667
+dot 911 719
+
+// CIMmy Intakes
+dot 1274 274
+line 1276 277 1194 309
+line 1194 309 1194 586
+line 1194 586 1055 635
+line 1055 635 945 635
+line 945 635 924 650
+line 924 650 924 670
+line 924 670 924 722
+dot 921 667
+dot 921 719
+
+// Power Shooters
+dot 1274 308
+line 1276 311 1202 340
+line 1202 340 1202 635
+//line 654 635 747 693
+//line 747 693 788 693
+//dot 785 690
+
+// Speed Shooters
+dot 1274 340
+line 1276 343 1210 370
+line 1210 370 1210 650
+//line 642 650 747 716
+//line 747 716 788 716
+//dot 785 713
+
+// PCM
+dot 1274 374
+line 1276 377 1218 401
+line 1218 401 1218 650
+//line 642 650 747 716
+//line 747 716 788 716
+//dot 785 713
+
+// Total Current
+dot 1274 408
+line 1276 411 1226 433
+line 1226 433 1226 746
+//line 630 746 719 805
+//line 719 805 754 805
+//dot 751 802
