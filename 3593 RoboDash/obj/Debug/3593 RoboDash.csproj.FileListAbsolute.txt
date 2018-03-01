@@ -1,30 +1,3 @@
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\3593 RoboDash.exe.config
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\3593 RoboDash.exe
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\3593 RoboDash.pdb
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\FRC.NetworkTables.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.AsyncEx.Context.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.AsyncEx.Coordination.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.AsyncEx.Tasks.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.Collections.Deque.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.Disposables.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\FRC.NetworkTables.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.AsyncEx.Context.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.AsyncEx.Coordination.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.AsyncEx.Tasks.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.Collections.Deque.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\Nito.Disposables.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.csprojResolveAssemblyReference.cache
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\_3593_RoboDash.dashMain.resources
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\_3593_RoboDash.Properties.Resources.resources
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.csproj.GenerateResource.Cache
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.exe
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.pdb
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\AForge.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\AForge.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x86\OpenCvSharpExtern.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x86\opencv_ffmpeg320.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x64\OpenCvSharpExtern.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x64\opencv_ffmpeg320_64.dll
 C:\Users\Administrator\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x86\OpenCvSharpExtern.dll
 C:\Users\Administrator\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x86\opencv_ffmpeg320.dll
 C:\Users\Administrator\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x64\OpenCvSharpExtern.dll
@@ -64,7 +37,6 @@ C:\Users\Administrator\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboD
 C:\Users\Administrator\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.csproj.GenerateResource.Cache
 C:\Users\Administrator\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.exe
 C:\Users\Administrator\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.pdb
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.csproj.CoreCompileInputs.cache
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\3593 RoboDash.exe.config
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.exe
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.pdb
@@ -95,32 +67,6 @@ C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDa
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\_3593_RoboDash.dashMain.resources
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\_3593_RoboDash.Properties.Resources.resources
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.csproj.GenerateResource.Cache
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\NLog.config
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\NLog.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\NLog.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\OpenTK.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\OpenTK.GLControl.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\ZedGraph.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\OpenTK.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\OpenTK.GLControl.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\ZedGraph.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\de\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\es\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\fr\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\hu\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\it\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\ja\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\pt\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\ru\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\sk\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\sv\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\tr\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\zh-cn\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\zh-tw\ZedGraph.resources.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\CircularProgressBar.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\WinFormAnimation.dll
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\CircularProgressBar.xml
-C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\WinFormAnimation.xml
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\CircularProgressBar.dll
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\OpenTK.dll
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\OpenTK.GLControl.dll
@@ -145,3 +91,24 @@ C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDa
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\zh-cn\ZedGraph.resources.dll
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\zh-tw\ZedGraph.resources.dll
 C:\Users\mason.harper\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.csproj.CoreCompileInputs.cache
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x86\OpenCvSharpExtern.dll
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x86\opencv_ffmpeg320.dll
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x64\OpenCvSharpExtern.dll
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\dll\x64\opencv_ffmpeg320_64.dll
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\amd64\libzmq.dll
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\amd64\libsodium.dll
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\i386\libzmq.dll
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\i386\libsodium.dll
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\amd64\libzmq.so
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\i386\libzmq.so
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\NLog.config
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\3593 RoboDash.exe.config
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\3593 RoboDash.exe
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\bin\Debug\3593 RoboDash.pdb
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.csprojResolveAssemblyReference.cache
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\_3593_RoboDash.DashMain.resources
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\_3593_RoboDash.Properties.Resources.resources
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.csproj.GenerateResource.Cache
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.csproj.CoreCompileInputs.cache
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.exe
+C:\Users\Mason\OneDrive\Documents\Visual Studio\3593 RoboDash\3593 RoboDash\obj\Debug\3593 RoboDash.pdb

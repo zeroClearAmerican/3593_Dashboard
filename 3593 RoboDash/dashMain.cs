@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
-using NetworkTables;
 using MjpegProcessor;
 using System.Globalization;
+using ZeroMQ;
+using Newtonsoft.Json.Linq;
 
 namespace _3593_RoboDash
 {
@@ -29,16 +28,17 @@ namespace _3593_RoboDash
         BackgroundWorker bwUpdateLoop;
         bool loopActive = true;
 
-        public static NetworkTable ntPower;
-        public static NetworkTable ntBehavior;
-        public static NetworkTable ntValues;
-        public static NetworkTable ntVision;
+        ZContext context;
+        ZSocket requester;
+        JObject returnedData = new JObject();
 
         // Local variables---------------------------------------
-        private readonly string _robotHostname = "roboRIO-3593-FRC.local";
+        //private readonly string _robotHostname = "roboRIO-3593-FRC.local";
+        private readonly string _robotHostname = "roboRIO-3593-FRC.frc-robot.local";
         private readonly string _robotIP = "10.35.93.2";
         private readonly string _piIP = "10.35.93.49";
-        private string _currentBotAddr = "roboRIO-3593-FRC.local";
+        //private string _currentBotAddr = "roboRIO-3593-FRC.local";
+        private string _currentBotAddr = "roboRIO-3593-FRC.frc-robot.local";
         private string _autoMode = "BASEONLY";
 
         enum CameraPort : int
@@ -79,22 +79,17 @@ namespace _3593_RoboDash
         // Begins a new thread to get the data and update UI controls
         private void StartUpdateLoop()
         {
-            NetworkTable.Shutdown();
-            UpdateMode("Not Connected");
+            lblMode.Text = "Not Connected";
 
-            // Initialize NetworkTables objects and set this program to NT clientMode
-            NetworkTable.SetClientMode();
-            // Use mDNS only in testing. In competition, use the actual IP
-            NetworkTable.SetIPAddress(_currentBotAddr);
-            NetworkTable.SetTeam(3593);
-            NetworkTable.SetNetworkIdentity("3593-Dashboard");
-            NetworkTable.Initialize();
+            //if (context != null && requester != null)
+            //{
+            //    context.Dispose();
+            //    requester.Dispose();
+            //}
 
-            // Initialize network tables
-            ntPower = NetworkTable.GetTable("3593-Power");
-            ntValues = NetworkTable.GetTable("3593-Values");
-            ntBehavior = NetworkTable.GetTable("3593-Behavior");
-            ntBehavior.PutString("autoMode", _autoMode); // Immediately set autoMode to make sure it's in the NT
+            context = new ZContext();
+            requester = new ZSocket(context, ZSocketType.REQ);
+            requester.Connect("tcp://" + _currentBotAddr + ":1180");
 
             // Get camera URI and start the camera feed
             StartCamera();
@@ -112,33 +107,33 @@ namespace _3593_RoboDash
         private void StartCamera()
         {
             // Stop the current stream if it's running
-            if (stream0 != null)
+            AsyncFormUpdate(new Action(() =>
             {
-                stream0.StopStream();
-                viewCam0.Image = viewCam0.ErrorImage;
-            }
+                if (stream0 != null)
+                {
+                    stream0.StopStream();
+                    viewCam0.Image = viewCam0.ErrorImage;
+                }
 
-            // Delay 100ms, then screate a new stream URL and connect
-            Thread.Sleep(100);
-            stream0 = new MjpegDecoder();
-            stream0.FrameReady += FrameReady_cam0;
-            _camera0URI = "http://" + _currentCameraHost + ":" + currentCameraView + "/?action=stream";
+                // Delay 100ms, then screate a new stream URL and connect
+                Thread.Sleep(100);
+                stream0 = new MjpegDecoder();
+                stream0.FrameReady += FrameReady_cam0;
+                _camera0URI = "http://" + _currentCameraHost + ":" + currentCameraView + "/?action=stream";
 
-            try
-            {
-                stream0.ParseStream(new Uri(_camera0URI));
-            }
-            catch (Exception)
-            {
-                lblStatus.Text = "Could not start camera";
-            }
+                try
+                {
+                    //stream0.ParseStream(new Uri(_camera0URI));
+                }
+                catch (Exception)
+                {
+                    lblStatus.Text = "Could not start camera";
+                }
+            }));
         }
 
         private void UpdateLoop(object sender, DoWorkEventArgs e)
         {
-            // Build Dictionary of elements to get
-            Dictionary<string, string> elements = BuildUIDict();
-
             loopActive = true;
             int loopInterval = 50;
 
@@ -147,7 +142,6 @@ namespace _3593_RoboDash
             { 
                 AsyncFormUpdate(new Action(() =>
                 {
-                    lblStatus.Text = ntBehavior.IsConnected ? "NT Connected" : "NT Failed";
                     lblStatus.Text = "Update Loop Running";
                 }));
 
@@ -155,114 +149,60 @@ namespace _3593_RoboDash
                 // If true, stop the loop
                 if (bwUpdateLoop.CancellationPending)
                 {
+                    requester.Close();
+                    context.Shutdown();
+                    context.Dispose();
+                    requester.Dispose();
+                    loopActive = false;
+
                     AsyncFormUpdate(new Action(() =>
                     {
                         lblStatus.Text = "Update Loop Stopped";
                     }));
                     break;
                 }
+                
+                /// Socket Code
+                // Send
+                requester.Send(new ZFrame(_autoMode));
 
-                // Get all information from the NetworkTables ===========
+                try
+                {
+                    // Receive
+                    using (ZFrame reply = requester.ReceiveFrame())
+                    {
+                        returnedData = JObject.Parse(reply.ToString());
+                    }
+                }
+                catch (ZException ex)
+                {
+                    requester.Close();
+                    context.Shutdown();
+                    context.Dispose();
+                    requester.Dispose();
+                    loopActive = false;
 
-                // Behavior
-                elements["robotMode"] = ntBehavior.GetString("robotMode", "Not Connected");
-
-                // Values
-                /// Pneumatics
-
-                elements["systemPressure"] = ntValues.GetNumber("systemPressure", 0).ToString();
-                elements["intakeArms"] = ntValues.GetBoolean("intakeArms", false).ToString();
-                elements["shooterPosition"] = ntValues.GetBoolean("shooterPosition", true).ToString();
-                elements["driveShifter"] = ntValues.GetBoolean("driveShifter", true).ToString();
-                elements["flapPosition"] = ntValues.GetBoolean("flapPosition", true).ToString();
-
-                /// Power
-                elements["driveLeft1"] = ntPower.GetNumber("driveLeft1", 0).ToString();
-                elements["driveLeft2"] = ntPower.GetNumber("driveLeft2", 0).ToString();
-                elements["driveRight1"] = ntPower.GetNumber("driveRight1", 0).ToString();
-                elements["driveRight2"] = ntPower.GetNumber("driveRight2", 0).ToString();
-                elements["IntakeLeft"] = ntPower.GetNumber("IntakeLeft", 0).ToString();
-                elements["IntakeRight"] = ntPower.GetNumber("IntakeRight", 0).ToString();
-                elements["cimmy1"] = ntPower.GetNumber("cimmy1", 0).ToString();
-                elements["cimmy2"] = ntPower.GetNumber("cimmy2", 0).ToString();
-                elements["shooterLeft1"] = ntPower.GetNumber("shooterLeft1", 0).ToString();
-                elements["shooterLeft2"] = ntPower.GetNumber("shooterLeft2", 0).ToString();
-                elements["shooterRight1"] = ntPower.GetNumber("shooterRight1", 0).ToString();
-                elements["shooterRight2"] = ntPower.GetNumber("shooterRight2", 0).ToString();
-                //elements["pdpPCMCurrent"] = nt_values.GetNumber("pdpPCMCurrent", 0).ToString();
-                elements["totalCurrent"] = ntPower.GetNumber("totalCurrent", 0).ToString();
-                elements["battVoltage"] = ntPower.GetNumber("battVoltage", 0).ToString();
-
-                // Sensors
-                elements["driveLeftEncoder"] = ntValues.GetNumber("driveLeftEncoder", 0).ToString();
-                elements["driveRightEncoder"] = ntValues.GetNumber("driveRightEncoder", 0).ToString();
-                elements["gyroAngle"] = ntValues.GetNumber("gyroAngle", 0).ToString();
-                elements["gyroPIDRotation"] = ntValues.GetNumber("gyroPIDRotation", 0).ToString();
-                elements["rotationCorrection"] = ntValues.GetNumber("rotationCorrection", 0).ToString();
-
-                // Vision
-                elements["targetsFound"] = ntValues.GetNumber("targetsFound", 0).ToString();
+                    AsyncFormUpdate(new Action(() =>
+                    {
+                        lblMode.Text = "Loop Stopped";
+                        lblStatus.Text = "Update Loop Stopped";
+                    }));
+                    break;
+                }
 
                 // ======================================================
 
                 // Take all elements from the Dictionary and update the UI with them
-                AsyncFormUpdate(new Action(() => ShowUI(elements)));
+                AsyncFormUpdate(new Action(() => ShowUI(returnedData)));
 
                 // Stall the thread for a given interval to save on bandwidth
                 Thread.Sleep(loopInterval);
             }
 
             /// update the UI with this status
-            UpdateMode("Not Connected");
-        }
-
-        // Build the dictionary of values that will be taken from the updater loop and displayed in the UI
-        private Dictionary<string, string> BuildUIDict()
-        {
-            Dictionary<string, string> elements = new Dictionary<string, string>
-            {
-
-                // Behaviour-----------
-                { "robotMode", "Not Connected" },
-
-                // Values--------------
-
-                /// Power-----
-                { "driveRight1", "0" },
-                { "driveRight2", "0" },
-                { "driveLeft1", "0" },
-                { "driveLeft2", "0" },
-                { "IntakeLeft", "0" },
-                { "IntakeRight", "0" },
-                { "cimmy1", "0" },
-                { "cimmy2", "0" },
-                { "shooterLeft1", "0" },
-                { "shooterLeft2", "0" },
-                { "shooterRight1", "0" },
-                { "shooterRight2", "0" },
-                { "pdpPCMCurrent", "0" },
-                { "totalCurrent", "0" },
-                { "battVoltage", "0" },
-
-                /// Pneumatics
-                { "driveShifter", "Low" },
-                { "shooterPosition", "Up" },
-                { "intakeArms", "In" },
-                { "flapPosition", "Down" },
-                { "systemPressure", "0" },
-
-                // Sensors-------------
-                { "driveLeftEncoder", "0" },
-                { "driveRightEncoder", "0" },
-                { "rotationCorrection", "0" },
-                { "gyroAngle", "0" },
-                { "gyroPIDRotation", "0" },
-
-                // Vision--------------
-                { "targetsFound", "0" },
-            };
-
-            return elements;
+            AsyncFormUpdate(new Action(() => {
+                lblMode.Text = "Not Connected";
+            }));
         }
 
         // When a new frame is received, display it in the UI, viewCam0
@@ -270,12 +210,13 @@ namespace _3593_RoboDash
         {
             AsyncFormUpdate(new Action(() => viewCam0.Image = e.Bitmap));
             // CHECK IF CAMERA VIEW HAS CHANGED
-            //if (!ntBehavior.IsConnected) return;
 
-            if (ntBehavior.GetString("cameraView", "FRONT") == ((CameraPort)currentCameraView).ToString()) return;
+            if (!returnedData.ContainsKey("cameraView")) return;
+
+            if (returnedData["cameraView"].ToString() == ((CameraPort)currentCameraView).ToString()) return;
             
             // If the cameraView in NT has changed, switch camera views and restart camera
-            switch(ntBehavior.GetString("cameraView", "FRONT"))
+            switch(returnedData["cameraView"].ToString())
             {
                 case "REAR":
                     currentCameraView = (int)CameraPort.REAR;
@@ -289,101 +230,105 @@ namespace _3593_RoboDash
         }
 
         #region UI Processsing
-
-        delegate void SetTextCallback(Dictionary<string, string> input);
-        private void ShowUI(Dictionary<string, string> stat)
+        private void ShowUI(JObject stat)
         {
-            AsyncFormUpdate(new Action(() =>
+            // Set UI element values to their respective elements in the dictionary
+            /// Robot Mode
+            lblMode.Text = stat["robotMode"].ToString();
+
+            /// Power Values
+            // Drive Left
+            double DL_A = Convert.ToDouble(stat["driveLeft1"]) + Convert.ToDouble(stat["driveLeft2"]);
+            lblDriveLeftCurrent.Text = DL_A + "A";
+            gradientDriveLeft.Width = Convert.ToInt32((1 - (DL_A / 100f)) * 379f) - 5;
+            gradientDriveLeft.Location = new Point(pictureBox4.Right + 5 -
+                (Convert.ToInt32((1 - (DL_A / 100f)) * 379f)), gradientDriveLeft.Location.Y);
+
+            // Drive Right
+            double DR_A = Convert.ToDouble(stat["driveRight1"]) + Convert.ToDouble(stat["driveRight2"]);
+            lblDriveRightCurrent.Text = DR_A + "A";
+            gradientDriveRight.Width = Convert.ToInt32((1 - (DR_A / 100f)) * 379f) - 5;
+            gradientDriveRight.Location = new Point(pictureBox4.Right + 5 -
+                (Convert.ToInt32((1 - (DR_A / 100f)) * 379f)), gradientDriveRight.Location.Y);
+
+            // Summed Intakes 
+            double IA_A = Convert.ToDouble(stat["IntakeLeft"]) + Convert.ToDouble(stat["IntakeRight"]);
+            lblArmIntakeCurrent.Text = IA_A + "A";
+            gradientArmIntakes.Width = Convert.ToInt32((1 - (IA_A / 100f)) * 379f) - 5;
+            gradientArmIntakes.Location = new Point(pictureBox4.Right + 5 -
+                (Convert.ToInt32((1 - (IA_A / 100f)) * 379f)), gradientArmIntakes.Location.Y);
+
+            // Summed Cimmys
+            double CI_A = Convert.ToDouble(stat["cimmy1"]) + Convert.ToDouble(stat["cimmy1"]);
+            lblCimmyCurrent.Text = CI_A + "A";
+            gradientCimmyIntakes.Width = Convert.ToInt32((1 - (CI_A / 100f)) * 379f) - 5;
+            gradientCimmyIntakes.Location = new Point(pictureBox4.Right + 5 -
+                (Convert.ToInt32((1 - (CI_A / 100f)) * 379f)), gradientCimmyIntakes.Location.Y);
+
+            //// Power Shooters
+            double PS_A = Convert.ToDouble(stat["shooterRight2"]) + Convert.ToDouble(stat["shooterLeft2"]);
+            lblPowerShooterCurrent.Text = PS_A + "A";
+            gradientPowerShooters.Width = Convert.ToInt32((1 - (PS_A / 100f)) * 379f) - 5;
+            gradientPowerShooters.Location = new Point(pictureBox4.Right + 5 -
+                (Convert.ToInt32((1 - (PS_A / 100f)) * 379f)), gradientPowerShooters.Location.Y);
+
+            // Speed Shooters
+            double SS_A = Convert.ToDouble(stat["shooterRight1"]) + Convert.ToDouble(stat["shooterLeft1"]);
+            lblSpeedShooterCurrent.Text = SS_A + "A";
+            gradientSpeedShooters.Width = Convert.ToInt32((1 - (SS_A / 100f)) * 379f) - 5;
+            gradientSpeedShooters.Location = new Point(pictureBox4.Right + 5 -
+                (Convert.ToInt32((1 - (SS_A / 100f)) * 379f)), gradientSpeedShooters.Location.Y);
+
+            // Total Current
+            double totalA = Convert.ToDouble(stat["totalCurrent"]);
+            lblTotalCurrent.Text = stat["totalCurrent"] + "A";
+            gradTotalCurrent.Width = Convert.ToInt32((1 - (totalA / 100f)) * 379f) - 5;
+            gradTotalCurrent.Location = new Point(pictureBox4.Right + 5 -
+                (Convert.ToInt32((1 - (totalA / 100f)) * 379f)), gradTotalCurrent.Location.Y);
+
+
+            /// Battery Voltage
+            lblVoltMeter.Text = stat["battVoltage"] + "V";
+            if (Convert.ToDouble(stat["battVoltage"]) > 12.2)
             {
-                // Set UI element values to their respective elements in the dictionary
-                lblMode.Text = stat["robotMode"];
+                lblVoltMeter.BackColor = Color.LimeGreen; // Green Battery
+                lblVoltMeter.ForeColor = Color.Silver;
+            }
+            else if (Convert.ToDouble(stat["battVoltage"]) <= 12.2 && Convert.ToDouble(stat["battVoltage"]) > 11)
+            {
+                lblVoltMeter.BackColor = Color.Gold; // Yellow Battery
+                lblVoltMeter.ForeColor = Color.Black;
+            }
+            else
+            {
+                lblVoltMeter.BackColor = Color.Maroon; // Red Battery
+                lblVoltMeter.ForeColor = Color.Silver;
+            }
 
-                // Drive Left
-                double DL_A = Convert.ToDouble(stat["driveLeft1"]) + Convert.ToDouble(stat["driveLeft2"]);
-                lblDriveLeftCurrent.Text = DL_A + "A";
-                gradientDriveLeft.Width = Convert.ToInt32((1 - (DL_A / 100f)) * 379f) - 5;
-                gradientDriveLeft.Location = new Point(pictureBox4.Right + 5 -
-                    (Convert.ToInt32((1 - (DL_A / 100f)) * 379f)), gradientDriveLeft.Location.Y);
+            
+            /// Pneumatic Pressure
+            lblPressure.Text = stat["systemPressure"] + " PSI";
+            if (Convert.ToDouble(stat["systemPressure"]) > 100)
+            {
+                lblPressure.BackColor = Color.LimeGreen; // Green Pressure
+                lblPressure.ForeColor = Color.Silver;
+            }
+            else if (Convert.ToDouble(stat["systemPressure"]) <= 100 && Convert.ToDouble(stat["systemPressure"]) > 60)
+            {
+                lblPressure.BackColor = Color.Gold; // Yellow Pressure
+                lblPressure.ForeColor = Color.Black;
+            }
+            else
+            {
+                lblPressure.BackColor = Color.Maroon; // Red Pressure
+                lblPressure.ForeColor = Color.Silver;
+            }
 
-                // Drive Right
-                double DR_A = Convert.ToDouble(stat["driveRight1"]) + Convert.ToDouble(stat["driveRight2"]);
-                lblDriveRightCurrent.Text = DR_A + "A";
-                gradientDriveRight.Width = Convert.ToInt32((1 - (DR_A / 100f)) * 379f) - 5;
-                gradientDriveRight.Location = new Point(pictureBox4.Right + 5 -
-                    (Convert.ToInt32((1 - (DR_A / 100f)) * 379f)), gradientDriveRight.Location.Y);
 
-                // Summed Intakes 
-                double IA_A = Convert.ToDouble(stat["IntakeLeft"]) + Convert.ToDouble(stat["IntakeLeft"]);
-                lblArmIntakeCurrent.Text = IA_A + "A";
-                gradientArmIntakes.Width = Convert.ToInt32((1 - (IA_A / 100f)) * 379f) - 5;
-                gradientArmIntakes.Location = new Point(pictureBox4.Right + 5 -
-                    (Convert.ToInt32((1 - (IA_A / 100f)) * 379f)), gradientArmIntakes.Location.Y);
-
-                // Summed Cimmys
-                double CI_A = Convert.ToDouble(stat["cimmy1"]) + Convert.ToDouble(stat["cimmy1"]);
-                lblCimmyCurrent.Text = CI_A + "A";
-                gradientCimmyIntakes.Width = Convert.ToInt32((1 - (CI_A / 100f)) * 379f) - 5;
-                gradientCimmyIntakes.Location = new Point(pictureBox4.Right + 5 -
-                    (Convert.ToInt32((1 - (CI_A / 100f)) * 379f)), gradientCimmyIntakes.Location.Y);
-
-                //// Power Shooters
-                double PS_A = Convert.ToDouble(stat["shooterRight2"]) + Convert.ToDouble(stat["shooterLeft2"]);
-                lblPowerShooterCurrent.Text = PS_A + "A";
-                gradientPowerShooters.Width = Convert.ToInt32((1 - (PS_A / 100f)) * 379f) - 5;
-                gradientPowerShooters.Location = new Point(pictureBox4.Right + 5 -
-                    (Convert.ToInt32((1 - (PS_A / 100f)) * 379f)), gradientPowerShooters.Location.Y);
-
-                // Speed Shooters
-                double SS_A = Convert.ToDouble(stat["shooterRight1"]) + Convert.ToDouble(stat["shooterLeft1"]);
-                lblSpeedShooterCurrent.Text = SS_A + "A";
-                gradientSpeedShooters.Width = Convert.ToInt32((1 - (SS_A / 100f)) * 379f) - 5;
-                gradientSpeedShooters.Location = new Point(pictureBox4.Right + 5 -
-                    (Convert.ToInt32((1 - (SS_A / 100f)) * 379f)), gradientSpeedShooters.Location.Y);
-
-                // Total Current
-                double totalA = Convert.ToDouble(stat["totalCurrent"]);
-                lblTotalCurrent.Text = stat["totalCurrent"] + "A";
-                gradTotalCurrent.Width = Convert.ToInt32((1 - (totalA / 100f)) * 379f) - 5;
-                gradTotalCurrent.Location = new Point(pictureBox4.Right + 5 -
-                    (Convert.ToInt32((1 - (totalA / 100f)) * 379f)), gradTotalCurrent.Location.Y);
-
-                // Battery Voltage
-                lblVoltMeter.Text = stat["battVoltage"] + "V";
-                if (Convert.ToDouble(stat["battVoltage"]) > 12.2)
-                {
-                    lblVoltMeter.BackColor = Color.LimeGreen; // Green Battery
-                    lblVoltMeter.ForeColor = Color.Silver;
-                }
-                else if (Convert.ToDouble(stat["battVoltage"]) <= 12.2 && Convert.ToDouble(stat["battVoltage"]) > 11)
-                {
-                    lblVoltMeter.BackColor = Color.Gold; // Yellow Battery
-                    lblVoltMeter.ForeColor = Color.Black;
-                }
-                else
-                {
-                    lblVoltMeter.BackColor = Color.Maroon; // Red Battery
-                    lblVoltMeter.ForeColor = Color.Silver;
-                }
-
-                // System Pressure
-                // Battery Voltage
-                lblPressure.Text = stat["systemPressure"] + " PSI";
-                if (Convert.ToDouble(stat["systemPressure"]) > 100)
-                {
-                    lblPressure.BackColor = Color.LimeGreen; // Green Battery
-                    lblPressure.ForeColor = Color.Silver;
-                }
-                else if (Convert.ToDouble(stat["systemPressure"]) <= 100 && Convert.ToDouble(stat["systemPressure"]) > 60)
-                {
-                    lblPressure.BackColor = Color.Gold; // Yellow Battery
-                    lblPressure.ForeColor = Color.Black;
-                }
-                else
-                {
-                    lblPressure.BackColor = Color.Maroon; // Red Battery
-                    lblPressure.ForeColor = Color.Silver;
-                }
-
+            /// Gyro
+            if (Math.Abs(Convert.ToDouble(stat["gyroAngle"])) < 360)
+            {
+                // If angle is less than zero, indicator should show the angle from 0 backwards
                 if (Convert.ToDouble(stat["gyroAngle"]) < 0)
                 {
                     double angle = 360 - Convert.ToDouble(stat["gyroAngle"]);
@@ -391,30 +336,72 @@ namespace _3593_RoboDash
                 }
                 else
                     cgGyroAngle.Value = Convert.ToInt32(stat["gyroAngle"]);
+            }
+            cgGyroAngle.Text = stat["gyroAngle"].ToString();
 
-                lblEncDelta.Text = (Convert.ToDouble(stat["driveLeftEncoder"]) - Convert.ToDouble(stat["driveRightEncoder"])).ToString("F", CultureInfo.InvariantCulture);
-                lblGyroPID.Text = stat["gyroAngle"];
-            }));
-        } // Updates all UI elements with new status from the robot
 
-        delegate void SetStringCallback(string input);
-        private void UpdateMode(string s)
-        {
-            if (lblMode.InvokeRequired)
+            /// Encoders
+            double encoderAverage = (Convert.ToDouble(stat["driveLeftEncoder"]) + Convert.ToDouble(stat["driveRightEncoder"])) / 2;
+            lblEncDelta.Text = encoderAverage.ToString("F", CultureInfo.InvariantCulture);
+
+
+            /// Shifter
+            bool shifter = Convert.ToBoolean(stat["driveShifter"].ToString());
+            if (shifter)
             {
-                SetStringCallback d = new SetStringCallback(UpdateMode);
-                try
-                {
-                    Invoke(d, new object[] { s });
-                }
-                catch (ObjectDisposedException)
-                {
-                    // This occurs when a control is not active but we're still attempting to write to it
-                }
+                lblShifter.Text = "HIGH";
+                lblShifter.BackColor = Color.LimeGreen;
             }
             else
-                lblMode.Text = s;
-        } // This method updates just the robotMode UI element
+            {
+                lblShifter.Text = "LOW";
+                lblShifter.BackColor = Color.SteelBlue;
+            }
+
+
+            /// Intake Arms
+            bool arms = Convert.ToBoolean(stat["intakeArms"].ToString());
+            if (arms)
+            {
+                lblArmPos.Text = "OUT";
+                lblArmPos.BackColor = Color.LimeGreen;
+            }
+            else
+            {
+                lblArmPos.Text = "IN";
+                lblArmPos.BackColor = Color.Firebrick;
+            }
+
+
+            ///Shifter
+            bool lifter = Convert.ToBoolean(stat["shooterPosition"].ToString());
+            if (lifter)
+            {
+                lblLifter.Text = "SWITCH";
+                lblLifter.BackColor = Color.Blue;
+            }
+            else
+            {
+                lblLifter.Text = "SCALE";
+                lblLifter.BackColor = Color.LimeGreen;
+            }
+
+
+            ///Shifter
+            bool flap = Convert.ToBoolean(stat["flapPosition"].ToString());
+            if (flap)
+            {
+                lblFlapPos.Text = "UP";
+                lblFlapPos.BackColor = Color.LimeGreen;
+            }
+            else
+            {
+                lblFlapPos.Text = "DOWN";
+                lblFlapPos.BackColor = Color.Firebrick;
+            }
+
+
+        } // Updates all UI elements with new status from the robot
 
         #endregion
 
@@ -441,39 +428,111 @@ namespace _3593_RoboDash
         {
             Graphics g = e.Graphics; // Graphics Engine
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            string[] elements;
 
             Pen whitePen = new Pen(Color.White); // White lines
             whitePen.Width = 2.0F;
-            Pen redPen = new Pen(Color.Red); // Red 
+            Pen redPen = new Pen(Color.Red); // redPen 
             redPen.Width = 1.0F;
-            //g.FillRectangle(new SolidBrush(Color.FromArgb(74, 74, 74)), 1305, 118, 252, 252);
-            //g.DrawEllipse(redPen, 1307, 120, 248, 248);
+            Pen bluePen = new Pen(Color.RoyalBlue); // bluePen
+            bluePen.Width = 1.0F;
+            Pen steelBluePen = new Pen(Color.SteelBlue); // steelBluePen
+            steelBluePen.Width = 1.0F;
+            Pen limeGreenPen = new Pen(Color.LimeGreen); // limeGreenPen
+            limeGreenPen.Width = 1.0F;
 
-            string[] elements = System.IO.File.ReadAllLines(Environment.CurrentDirectory + "\\graphics.txt"); // Read elements file
+            // Robot
+            elements = System.IO.File.ReadAllLines(Environment.CurrentDirectory + "\\Graphics\\robot.graph"); // Read powerlines file
+            foreach (string s in elements)
+            {
+                if (s.Replace(" ", "") == "") continue;
+                string[] line = s.Split(' ');
+                g.DrawRectangle(whitePen, Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), Convert.ToInt32(line[3]), Convert.ToInt32(line[4]));
+            }
 
-            // For each line in the file, create a new element if applicable
+            // Power lines
+            elements = System.IO.File.ReadAllLines(Environment.CurrentDirectory + "\\Graphics\\powerLines.graph"); // Read powerlines file
             foreach (string s in elements)
             {
                 string[] line = s.Split(' ');
                 switch (line[0].ToLower())
                 {
-                    case "rect":
-                        g.DrawRectangle(whitePen, Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), Convert.ToInt32(line[3]), Convert.ToInt32(line[4]));
-                        break;
                     case "line":
                         g.DrawLine(redPen, Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), Convert.ToInt32(line[3]), Convert.ToInt32(line[4]));
                         break;
                     case "dot":
                         g.FillEllipse(new SolidBrush(redPen.Color), Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), 6, 6);
                         break;
-                    case "circle":
-                        //g.DrawEllipse(redPen, 1305, 118, 252, 252);
+                }
+            }
+
+            // Lifter
+            elements = System.IO.File.ReadAllLines(Environment.CurrentDirectory + "\\Graphics\\lifter.graph"); // Read powerlines file
+            foreach (string s in elements)
+            {
+                string[] line = s.Split(' ');
+                switch (line[0].ToLower())
+                {
+                    case "line":
+                        g.DrawLine(bluePen, Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), Convert.ToInt32(line[3]), Convert.ToInt32(line[4]));
                         break;
-                    case default(string):
+                    case "dot":
+                        g.FillEllipse(new SolidBrush(bluePen.Color), Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), 6, 6);
                         break;
                 }
             }
 
+            // Shifter
+            elements = System.IO.File.ReadAllLines(Environment.CurrentDirectory + "\\Graphics\\shifter.graph"); // Read powerlines file
+            foreach (string s in elements)
+            {
+                string[] line = s.Split(' ');
+                switch (line[0].ToLower())
+                {
+                    case "line":
+                        g.DrawLine(steelBluePen, Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), Convert.ToInt32(line[3]), Convert.ToInt32(line[4]));
+                        break;
+                    case "dot":
+                        g.FillEllipse(new SolidBrush(steelBluePen.Color), Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), 6, 6);
+                        break;
+                }
+            }
+
+            // Intake Arms
+            elements = System.IO.File.ReadAllLines(Environment.CurrentDirectory + "\\Graphics\\intakeArms.graph"); // Read powerlines file
+            foreach (string s in elements)
+            {
+                string[] line = s.Split(' ');
+                switch (line[0].ToLower())
+                {
+                    case "line":
+                        g.DrawLine(limeGreenPen, Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), Convert.ToInt32(line[3]), Convert.ToInt32(line[4]));
+                        break;
+                    case "dot":
+                        g.FillEllipse(new SolidBrush(limeGreenPen.Color), Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), 6, 6);
+                        break;
+                }
+            }
+
+            // Flap
+            elements = System.IO.File.ReadAllLines(Environment.CurrentDirectory + "\\Graphics\\flap.graph"); // Read powerlines file
+            foreach (string s in elements)
+            {
+                string[] line = s.Split(' ');
+                switch (line[0].ToLower())
+                {
+                    case "line":
+                        g.DrawLine(redPen, Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), Convert.ToInt32(line[3]), Convert.ToInt32(line[4]));
+                        break;
+                    case "dot":
+                        g.FillEllipse(new SolidBrush(redPen.Color), Convert.ToInt32(line[1]), Convert.ToInt32(line[2]), 6, 6);
+                        break;
+                }
+            }
+
+            bluePen.Dispose();
+            steelBluePen.Dispose();
+            limeGreenPen.Dispose();
             whitePen.Dispose();
             redPen.Dispose();
             g.Dispose();
@@ -492,23 +551,11 @@ namespace _3593_RoboDash
             StartUpdateLoop();
         } // Restart the entire update loop
 
-        private void button1_Click(object sender, EventArgs e)
+        private void RobotAddressChanged(object sender, EventArgs e)
         {
             // Set the program's IP values to the robot's IP address instead of using mDNS, then restart everything
-            if (_currentBotAddr != _robotIP)
-            {
-                _currentBotAddr = _robotIP;
-                _currentCameraHost = _robotIP;
-                btnFieldMode.Text = "Switch to Testing Mode";
-                lblIPMode.Text = "Field Mode active";
-            }
-            else if (_currentBotAddr != _robotHostname)
-            {
-                _currentBotAddr = _robotHostname;
-                _currentCameraHost = _robotHostname;
-                btnFieldMode.Text = "Switch to Field Mode";
-                lblIPMode.Text = "Testing Mode active";
-            }
+            _currentBotAddr = txtRobotAddress.Text;
+            _currentCameraHost = txtRobotAddress.Text;
 
             if (bwUpdateLoop != null)
             {
@@ -538,6 +585,7 @@ namespace _3593_RoboDash
             loopActive = false;
             
             bwUpdateLoop?.CancelAsync();
+            stream0.StopStream();
             Close();
         } // Closes form
 
@@ -645,11 +693,17 @@ namespace _3593_RoboDash
             }
         }
 
+        private void txtRobotAddress_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+                RobotAddressChanged(txtRobotAddress, EventArgs.Empty);
+        }
+
         private void AsyncFormUpdate(Action action)
         {
             if (action == null) return;
             // Do any pending events before doing our form update
-            Application.DoEvents();
+            //Application.DoEvents();
 
             // Execute the action on the form UI thread
             if (this.InvokeRequired)
@@ -657,7 +711,6 @@ namespace _3593_RoboDash
             else
                 action();
         }
-
         #endregion
 
         #region Autonomous buttons
@@ -665,7 +718,6 @@ namespace _3593_RoboDash
         {
             lblActiveAuto.Text = s.ToUpper();
             this._autoMode = s.ToUpper();
-            ntBehavior.PutString("autoMode", _autoMode);
         }
 
         private void AutoButtonDown(object sender, EventArgs e)
@@ -687,6 +739,5 @@ namespace _3593_RoboDash
         }
 
         #endregion
-        
     }
 }

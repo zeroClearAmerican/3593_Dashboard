@@ -32,8 +32,8 @@
             this.lblMode = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txtRobotAddress = new System.Windows.Forms.TextBox();
             this.lblIPMode = new System.Windows.Forms.Label();
-            this.btnFieldMode = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.btnRedraw = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
@@ -94,19 +94,17 @@
             this.radCameraFront = new System.Windows.Forms.RadioButton();
             this.label10 = new System.Windows.Forms.Label();
             this.cgGyroAngle = new CircularProgressBar.CircularProgressBar();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.lblGyroPID = new System.Windows.Forms.Label();
-            this.lblEncDelta = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
+            this.lblArmPos = new System.Windows.Forms.Label();
+            this.lblLifter = new System.Windows.Forms.Label();
+            this.lblFlapPos = new System.Windows.Forms.Label();
+            this.lblShifter = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.lblEncDelta = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewCam0)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -150,8 +148,8 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.panel1.Controls.Add(this.txtRobotAddress);
             this.panel1.Controls.Add(this.lblIPMode);
-            this.panel1.Controls.Add(this.btnFieldMode);
             this.panel1.Controls.Add(this.lblStatus);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.lblMode);
@@ -160,27 +158,28 @@
             this.panel1.Size = new System.Drawing.Size(1864, 100);
             this.panel1.TabIndex = 2;
             // 
+            // txtRobotAddress
+            // 
+            this.txtRobotAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRobotAddress.Location = new System.Drawing.Point(9, 50);
+            this.txtRobotAddress.Name = "txtRobotAddress";
+            this.txtRobotAddress.Size = new System.Drawing.Size(334, 31);
+            this.txtRobotAddress.TabIndex = 5;
+            this.txtRobotAddress.Text = "roboRIO-3593-FRC.local";
+            this.txtRobotAddress.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtRobotAddress_KeyPress);
+            this.txtRobotAddress.Leave += new System.EventHandler(this.RobotAddressChanged);
+            // 
             // lblIPMode
             // 
+            this.lblIPMode.AutoSize = true;
             this.lblIPMode.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblIPMode.ForeColor = System.Drawing.Color.LightSkyBlue;
-            this.lblIPMode.Location = new System.Drawing.Point(3, 4);
+            this.lblIPMode.ForeColor = System.Drawing.Color.Crimson;
+            this.lblIPMode.Location = new System.Drawing.Point(8, 10);
             this.lblIPMode.Name = "lblIPMode";
-            this.lblIPMode.Size = new System.Drawing.Size(270, 45);
+            this.lblIPMode.Size = new System.Drawing.Size(193, 36);
             this.lblIPMode.TabIndex = 4;
-            this.lblIPMode.Text = "Testing mode active";
+            this.lblIPMode.Text = "Robot Address:";
             this.lblIPMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btnFieldMode
-            // 
-            this.btnFieldMode.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFieldMode.Location = new System.Drawing.Point(4, 49);
-            this.btnFieldMode.Name = "btnFieldMode";
-            this.btnFieldMode.Size = new System.Drawing.Size(269, 46);
-            this.btnFieldMode.TabIndex = 3;
-            this.btnFieldMode.Text = "Switch to Field Mode";
-            this.btnFieldMode.UseVisualStyleBackColor = true;
-            this.btnFieldMode.Click += new System.EventHandler(this.button1_Click);
             // 
             // lblStatus
             // 
@@ -467,6 +466,7 @@
             // 
             // pictureBox9
             // 
+            this.pictureBox9.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox9.Image")));
             this.pictureBox9.Location = new System.Drawing.Point(8, 33);
             this.pictureBox9.Name = "pictureBox9";
             this.pictureBox9.Size = new System.Drawing.Size(486, 354);
@@ -754,9 +754,9 @@
             this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.label8.Location = new System.Drawing.Point(1289, 360);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(70, 32);
+            this.label8.Size = new System.Drawing.Size(133, 32);
             this.label8.TabIndex = 17;
-            this.label8.Text = "PCM:";
+            this.label8.Text = "NOT USED:";
             // 
             // lblPcmCurrent
             // 
@@ -939,6 +939,106 @@
             this.cgGyroAngle.TextMargin = new System.Windows.Forms.Padding(8, 8, 0, 0);
             this.cgGyroAngle.Value = 68;
             // 
+            // label15
+            // 
+            this.label15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
+            this.label15.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label15.Location = new System.Drawing.Point(1276, 714);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(88, 32);
+            this.label15.TabIndex = 46;
+            this.label15.Text = "Shifter";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label19
+            // 
+            this.label19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
+            this.label19.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label19.Location = new System.Drawing.Point(1698, 613);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(88, 32);
+            this.label19.TabIndex = 46;
+            this.label19.Text = "Arms";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label21
+            // 
+            this.label21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
+            this.label21.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label21.Location = new System.Drawing.Point(1280, 613);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(84, 32);
+            this.label21.TabIndex = 46;
+            this.label21.Text = "Lifter";
+            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label22
+            // 
+            this.label22.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
+            this.label22.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label22.Location = new System.Drawing.Point(1698, 714);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(84, 32);
+            this.label22.TabIndex = 46;
+            this.label22.Text = "Flap";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblArmPos
+            // 
+            this.lblArmPos.BackColor = System.Drawing.Color.LimeGreen;
+            this.lblArmPos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblArmPos.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblArmPos.ForeColor = System.Drawing.Color.White;
+            this.lblArmPos.Location = new System.Drawing.Point(1536, 582);
+            this.lblArmPos.Name = "lblArmPos";
+            this.lblArmPos.Size = new System.Drawing.Size(160, 96);
+            this.lblArmPos.TabIndex = 47;
+            this.lblArmPos.Text = "IN";
+            this.lblArmPos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblLifter
+            // 
+            this.lblLifter.BackColor = System.Drawing.Color.Blue;
+            this.lblLifter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblLifter.Font = new System.Drawing.Font("Segoe UI", 27F, System.Drawing.FontStyle.Bold);
+            this.lblLifter.ForeColor = System.Drawing.Color.White;
+            this.lblLifter.Location = new System.Drawing.Point(1370, 582);
+            this.lblLifter.Name = "lblLifter";
+            this.lblLifter.Size = new System.Drawing.Size(160, 96);
+            this.lblLifter.TabIndex = 47;
+            this.lblLifter.Text = "SWITCH";
+            this.lblLifter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblFlapPos
+            // 
+            this.lblFlapPos.BackColor = System.Drawing.Color.Firebrick;
+            this.lblFlapPos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblFlapPos.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFlapPos.ForeColor = System.Drawing.Color.White;
+            this.lblFlapPos.Location = new System.Drawing.Point(1536, 683);
+            this.lblFlapPos.Name = "lblFlapPos";
+            this.lblFlapPos.Size = new System.Drawing.Size(160, 96);
+            this.lblFlapPos.TabIndex = 47;
+            this.lblFlapPos.Text = "DOWN";
+            this.lblFlapPos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblShifter
+            // 
+            this.lblShifter.BackColor = System.Drawing.Color.SteelBlue;
+            this.lblShifter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblShifter.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblShifter.ForeColor = System.Drawing.Color.White;
+            this.lblShifter.Location = new System.Drawing.Point(1370, 683);
+            this.lblShifter.Name = "lblShifter";
+            this.lblShifter.Size = new System.Drawing.Size(160, 96);
+            this.lblShifter.TabIndex = 47;
+            this.lblShifter.Text = "LOW";
+            this.lblShifter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -947,9 +1047,9 @@
             this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.label11.Location = new System.Drawing.Point(205, 175);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(94, 32);
+            this.label11.Size = new System.Drawing.Size(139, 32);
             this.label11.TabIndex = 45;
-            this.label11.Text = "Gy_PID:";
+            this.label11.Text = "Gyro Angle:";
             // 
             // label14
             // 
@@ -959,22 +1059,9 @@
             this.label14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.label14.Location = new System.Drawing.Point(205, 258);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(84, 32);
+            this.label14.Size = new System.Drawing.Size(82, 32);
             this.label14.TabIndex = 46;
-            this.label14.Text = "Enc_D:";
-            // 
-            // lblGyroPID
-            // 
-            this.lblGyroPID.BackColor = System.Drawing.Color.Black;
-            this.lblGyroPID.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblGyroPID.Font = new System.Drawing.Font("Segoe UI", 15.25F, System.Drawing.FontStyle.Bold);
-            this.lblGyroPID.ForeColor = System.Drawing.Color.White;
-            this.lblGyroPID.Location = new System.Drawing.Point(211, 215);
-            this.lblGyroPID.Name = "lblGyroPID";
-            this.lblGyroPID.Size = new System.Drawing.Size(88, 35);
-            this.lblGyroPID.TabIndex = 47;
-            this.lblGyroPID.Text = "0";
-            this.lblGyroPID.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label14.Text = "Enc_A:";
             // 
             // lblEncDelta
             // 
@@ -989,131 +1076,17 @@
             this.lblEncDelta.Text = "0";
             this.lblEncDelta.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label15
-            // 
-            this.label15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.label15.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label15.Location = new System.Drawing.Point(1276, 664);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(88, 32);
-            this.label15.TabIndex = 46;
-            this.label15.Text = "Shifter";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label19
-            // 
-            this.label19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.label19.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label19.Location = new System.Drawing.Point(1698, 563);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(88, 32);
-            this.label19.TabIndex = 46;
-            this.label19.Text = "Arms";
-            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label21
-            // 
-            this.label21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.label21.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label21.Location = new System.Drawing.Point(1280, 563);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(84, 32);
-            this.label21.TabIndex = 46;
-            this.label21.Text = "Lifter";
-            this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label22
-            // 
-            this.label22.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.label22.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label22.Location = new System.Drawing.Point(1698, 664);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(84, 32);
-            this.label22.TabIndex = 46;
-            this.label22.Text = "Flap";
-            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label26
-            // 
-            this.label26.BackColor = System.Drawing.Color.Black;
-            this.label26.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label26.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label26.ForeColor = System.Drawing.Color.White;
-            this.label26.Location = new System.Drawing.Point(1536, 532);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(160, 96);
-            this.label26.TabIndex = 47;
-            this.label26.Text = "0";
-            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label23
-            // 
-            this.label23.BackColor = System.Drawing.Color.Black;
-            this.label23.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label23.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label23.ForeColor = System.Drawing.Color.White;
-            this.label23.Location = new System.Drawing.Point(1370, 532);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(160, 96);
-            this.label23.TabIndex = 47;
-            this.label23.Text = "0";
-            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label24
-            // 
-            this.label24.BackColor = System.Drawing.Color.Black;
-            this.label24.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label24.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label24.ForeColor = System.Drawing.Color.White;
-            this.label24.Location = new System.Drawing.Point(1536, 633);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(160, 96);
-            this.label24.TabIndex = 47;
-            this.label24.Text = "0";
-            this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label25
-            // 
-            this.label25.BackColor = System.Drawing.Color.Black;
-            this.label25.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label25.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label25.ForeColor = System.Drawing.Color.White;
-            this.label25.Location = new System.Drawing.Point(1370, 633);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(160, 96);
-            this.label25.TabIndex = 47;
-            this.label25.Text = "0";
-            this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label27
-            // 
-            this.label27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.label27.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label27.Location = new System.Drawing.Point(1271, 769);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(88, 32);
-            this.label27.TabIndex = 49;
-            this.label27.Text = "Shifter";
-            this.label27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // DashMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
             this.ClientSize = new System.Drawing.Size(1920, 850);
-            this.Controls.Add(this.label27);
             this.Controls.Add(this.lblEncDelta);
-            this.Controls.Add(this.label23);
-            this.Controls.Add(this.label25);
-            this.Controls.Add(this.label24);
-            this.Controls.Add(this.label26);
-            this.Controls.Add(this.lblGyroPID);
+            this.Controls.Add(this.lblLifter);
+            this.Controls.Add(this.lblShifter);
+            this.Controls.Add(this.lblFlapPos);
+            this.Controls.Add(this.lblArmPos);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.label21);
             this.Controls.Add(this.label19);
@@ -1214,7 +1187,6 @@
         private System.Windows.Forms.Label lblVoltMeter;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblStatus;
-        private System.Windows.Forms.Button btnFieldMode;
         private System.Windows.Forms.Label lblIPMode;
         private System.Windows.Forms.Button btnRedraw;
         private System.Windows.Forms.Label gradTotalCurrent;
@@ -1263,20 +1235,19 @@
         private System.Windows.Forms.RadioButton radCameraFront;
         private System.Windows.Forms.Label label10;
         private CircularProgressBar.CircularProgressBar cgGyroAngle;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label lblGyroPID;
-        private System.Windows.Forms.Label lblEncDelta;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label lblArmPos;
+        private System.Windows.Forms.Label lblLifter;
+        private System.Windows.Forms.Label lblFlapPos;
+        private System.Windows.Forms.Label lblShifter;
         private System.Windows.Forms.PictureBox pictureBox9;
-        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.TextBox txtRobotAddress;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label lblEncDelta;
     }
 }
 

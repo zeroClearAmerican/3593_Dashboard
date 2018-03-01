@@ -1,0 +1,13 @@
+rect 650 572 395 249 // Robot frame
+rect 650 612 395 169 // Internal frame
+
+rect 1010 646 25 101 // Battery
+rect 870 656 130 80 // PDP
+
+rect 665 579 60 27 // Top-Left wheel
+rect 817 579 60 27 // Top-Middle wheel
+rect 969 579 60 27 // Top-Right wheel
+
+rect 665 788 60 27 // Bottom-Left wheel
+rect 817 788 60 27 // Bottom-Middle wheel
+rect 969 788 60 27 // Bottom-Right wheel
