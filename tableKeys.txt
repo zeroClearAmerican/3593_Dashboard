@@ -1,0 +1,32 @@
+["robotMode"]
+
+// Toggles
+["systemPressure"]
+["intakeArms"]
+["shooterPosition"]
+["driveShifter"]
+["flapPosition"]
+
+// Power
+["driveLeft1"]
+["driveLeft2"]
+["driveRight1"]
+["driveRight2"]
+["IntakeLeft"]
+["IntakeRight"]
+["cimmy1"]
+["cimmy2"]
+["shooterLeft1"
+["shooterLeft2"]
+["shooterRight1"]
+["shooterRight2"]
+["totalCurrent"]
+["battVoltage"]
+
+// Sensors
+["driveLeftEncoder"]
+["driveRightEncoder"]
+["gyroAngle"]
+
+// Vision
+["targetsFound"]

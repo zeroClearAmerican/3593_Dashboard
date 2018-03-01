@@ -33,12 +33,8 @@ namespace _3593_RoboDash
         JObject returnedData = new JObject();
 
         // Local variables---------------------------------------
-        //private readonly string _robotHostname = "roboRIO-3593-FRC.local";
-        private readonly string _robotHostname = "roboRIO-3593-FRC.frc-robot.local";
-        private readonly string _robotIP = "10.35.93.2";
         private readonly string _piIP = "10.35.93.49";
-        //private string _currentBotAddr = "roboRIO-3593-FRC.local";
-        private string _currentBotAddr = "roboRIO-3593-FRC.frc-robot.local";
+        private string _currentBotAddr = "roboRIO-3593-FRC.local";
         private string _autoMode = "BASEONLY";
 
         enum CameraPort : int
@@ -80,12 +76,6 @@ namespace _3593_RoboDash
         private void StartUpdateLoop()
         {
             lblMode.Text = "Not Connected";
-
-            //if (context != null && requester != null)
-            //{
-            //    context.Dispose();
-            //    requester.Dispose();
-            //}
 
             context = new ZContext();
             requester = new ZSocket(context, ZSocketType.REQ);
