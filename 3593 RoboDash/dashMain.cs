@@ -8,6 +8,7 @@ using MjpegProcessor;
 using System.Globalization;
 using ZeroMQ;
 using Newtonsoft.Json.Linq;
+using NLog;
 
 namespace _3593_RoboDash
 {
@@ -706,8 +707,8 @@ namespace _3593_RoboDash
         #region Autonomous buttons
         private void AutoButtonClick(string s)
         {
-            lblActiveAuto.Text = s.ToUpper();
-            this._autoMode = s.ToUpper();
+            lblActiveAuto.Text = s;
+            this._autoMode = s;
         }
 
         private void AutoButtonDown(object sender, EventArgs e)
@@ -716,7 +717,7 @@ namespace _3593_RoboDash
             lbl.BackColor = Color.Red;
             lbl.ForeColor = Color.Black;
 
-            AutoButtonClick(lbl.Text);
+            AutoButtonClick(lbl.Text.ToUpper());
 
             foreach(var l in autoLabels)
             {

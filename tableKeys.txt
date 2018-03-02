@@ -1,11 +1,10 @@
-["robotMode"]
+> ["robotMode"] 
 
 // Toggles
-["systemPressure"]
-["intakeArms"]
-["shooterPosition"]
-["driveShifter"]
-["flapPosition"]
+>["intakeArms"]
+>["shooterPosition"]
+>["driveShifter"]
+>["flapPosition"]
 
 // Power
 ["driveLeft1"]
@@ -24,9 +23,10 @@
 ["battVoltage"]
 
 // Sensors
-["driveLeftEncoder"]
-["driveRightEncoder"]
-["gyroAngle"]
+>["driveLeftEncoder"]
+>["driveRightEncoder"]
+>["gyroAngle"]
+>["systemPressure"] 
 
 // Vision
 ["targetsFound"]
